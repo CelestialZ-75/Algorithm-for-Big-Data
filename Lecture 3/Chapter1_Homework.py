@@ -3,8 +3,7 @@
 from functools import reduce
 
 def normalize(L):
-    # TODO:_____________________
-    return L
+    return L[0].upper() + L[1:].lower()
 
 L1 = ['adam', 'LISA', 'barT']
 L2 = list(map(normalize, L1))
@@ -18,10 +17,13 @@ def add(a,s):
 def mult(a,s):
     return a*s
 def sum(L):
-    # TODO:_____________________
+    sig = 0
+    for i in L:
+        sig += i
+    return sig
 
 def prod(L):
-    # TODO:_____________________
+    return reduce(mult,L,1)
 
 L=[1,2,3,4]
 print(sum(L))
