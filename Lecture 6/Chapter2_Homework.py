@@ -26,7 +26,8 @@ class EuclideanLSH:
         return: 每一行代表一个向量输出的所有索引，每一列代表位于一个hash_table中的索引
         """
         # TODO: 计算H(V) = |V·R + b| / a，R是一个随机向量，a是桶宽，b是一个在[0,a]之间均匀分布的随机变量，用hash_val表示H(V)
-        #___________________________#
+        hash_vec = inputs @ self.R + self.b
+        hash_val = np.floor(hash_vec / self.a).astype(int)
 
         return hash_val
 
@@ -37,7 +38,7 @@ class EuclideanLSH:
         inputs = np.array(inputs)
         if len(inputs.shape) == 1:
             # TODO: 将inputs转化为二维向量
-            #___________________________#
+            inputs = inputs.reshape(1,-1)
 
         hash_index = self._hash(inputs)
         for inputs_one, indexs in zip(inputs, hash_index):
@@ -58,10 +59,17 @@ class EuclideanLSH:
         candidates = set()
 
         # TODO: 将相同索引位置的向量添加到候选集中
-        #___________________________#
+        for bucket,key in enumerate(hash_val):
+            grab_res = self.hash_tables[bucket].get(key,[])
+            candidates.update(grab_res)
+            
 
         # TODO: 根据向量距离进行排序
-        #___________________________#
+        dis_ls = []
+        for cand in candidates:
+            dis_ls.append(self.euclidean_dis(inputs,cand))
+        ind = np.argsort(dis_ls)
+        candidates = np.array(list(candidates))[ind]; 
         return candidates[:nums]
 
     @staticmethod
